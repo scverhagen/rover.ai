@@ -1,6 +1,10 @@
 #!/usr/bin/python3
 import os, errno, time
 
+import rovercom
+
+thisfilepath = os.path.dirname(__file__)
+
 # Global Autopilot bool:
 autopilot = False
 
@@ -12,17 +16,7 @@ steering = 0 # (stopped)
 
 # throttle var:
 # range of 0 (stopped) to 10 (full throttle)
-
-def checkforcommand():
-    incmd = ''
-    try:
-        with open("/tmp/rover_cmd", 'r') as file:
-            incmd = os.read(file)
-        print(incmd)
-    except:
-        pass
-    
-    return incmd
+throttle = 0
 
 def checkforvisioncommand():
     
@@ -68,35 +62,62 @@ def processcommand(cmd):
         exit()
 
     if lcmd == 'stop':
+        print('stop')
         # stop resets steering and sets throttle to zero:
         steering = 1
         throttle = 0
+        return
 
     if largs[0] == 'move':
         if len(args) > 1:
-            if larg[1] == 'left':
+            if largs[1] == 'left':
+                print('move left')
                 throttle = 2
                 steering = 0
-            elif larg[1] == 'forward':
+            elif largs[1] == 'forward':
+                print('move forward')
                 throttle = 5
                 steering = 1
-            elif larg[1] == 'right':
+            elif largs[1] == 'right':
+                print('move right')
                 throttle = 2
                 steering = 2
+        return
+    
+    if largs[0] == 'steer':
+        if len(args) > 1:
+            if largs[1] == 'left':
+                print('steer left')
+                steering = 0
+            elif largs[1] == 'center':
+                print('steer center')
+                steering = 1
+            elif largs[1] == 'right':
+                print('steer right')
+                steering = 2
+        return
+    
+    if largs[0] == 'throttle':
+        if len(args) > 1:
+            print(f'Setting throttle to {args[1]}')
+            throttle = int(args[1])
+        return
 
 def do_init():
     # TODO:
     # init ultrasonic range sensor
-    pass
+    rovercom.init_fifo()
+    print('Rover Daemon')
+    print('Init complete.')
 
 def mainloop():
     
     while (1):
-        cmd = checkforcommand()
+        cmd = rovercom.checkforcommand()
         if cmd == '':
             time.sleep(.25)
         else:
-            print('Received command: ' + cmd)
+            #print('Received command: ' + cmd)
             processcommand(cmd)
 
         if autopilot == True:
