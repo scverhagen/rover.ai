@@ -10,6 +10,8 @@ thisfilepath = os.path.dirname(__file__)
 def wwwroot():
     hs = ''
     hs += '<html><body>'
+    hs += '<h2>Rover.ai</h2>'
+    hs += '<img src="/stream?action=stream">'
     hs += '</body></html>'
     return hs
 
