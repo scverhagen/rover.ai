@@ -8,7 +8,7 @@ autopilot = False
 # 0 = steering left
 # 1 = steering center
 # 2 = steering right
-steering = 0 (stopped)
+steering = 0 # (stopped)
 
 # throttle var:
 # range of 0 (stopped) to 10 (full throttle)
@@ -16,8 +16,9 @@ steering = 0 (stopped)
 def checkforcommand():
     incmd = ''
     try:
-        with os.open("/tmp/rover_cmd", os.O_RDONLY | os.O_NONBLOCK) as file:
-            incmd = os.read(file, 200);
+        with open("/tmp/rover_cmd", 'r') as file:
+            incmd = os.read(file)
+        print(incmd)
     except:
         pass
     
@@ -93,8 +94,9 @@ def mainloop():
     while (1):
         cmd = checkforcommand()
         if cmd == '':
-            sleep(.25)
+            time.sleep(.25)
         else:
+            print('Received command: ' + cmd)
             processcommand(cmd)
 
         if autopilot == True:
