@@ -1,6 +1,5 @@
 #!/usr/bin/python3
-import os, errno, time
-
+import os, time
 import rovercom
 
 thisfilepath = os.path.dirname(__file__)
@@ -17,6 +16,8 @@ steering = 0 # (stopped)
 # throttle var:
 # range of 0 (stopped) to 10 (full throttle)
 throttle = 0
+
+status = rovercom.status_fifo()
 
 def checkforvisioncommand():
     
@@ -53,6 +54,9 @@ def checkforvisioncommand():
     return ''
 
 def processcommand(cmd):
+    global steering
+    global throttle
+    
     lcmd = cmd.lower()
     args = cmd.split()
     largs = lcmd.split()
@@ -106,11 +110,12 @@ def processcommand(cmd):
 def do_init():
     # TODO:
     # init ultrasonic range sensor
-    rovercom.init_fifo()
+    rovercom.init_fifos()
     print('Rover Daemon')
     print('Init complete.')
 
 def mainloop():
+    laststatus = None
     
     while (1):
         cmd = rovercom.checkforcommand()
@@ -123,6 +128,22 @@ def mainloop():
         if autopilot == True:
             vcmd = checkforvisioncommand()
             processcommand(vcmd)
+        
+        # build status
+        curstatus = ''
+        if steering == 0:
+            curstatus = '<-  '
+        elif steering == 1:
+            curstatus = '^   '
+        elif steering == 2:
+            curstatus = '->  '
+        
+        curstatus += str(throttle * 10) + '%'
+        
+        if laststatus != curstatus:
+            #print('updating status')
+            status.setstatus(curstatus)
+            laststatus = curstatus
 
 if __name__ == '__main__':
     do_init()
