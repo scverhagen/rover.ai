@@ -103,7 +103,7 @@ def processcommand(cmd):
     
     if largs[0] == 'throttle':
         if len(args) > 1:
-            print(f'Setting throttle to {args[1]}')
+            print('Setting throttle to ' + args[1])
             throttle = int(args[1])
         return
 
