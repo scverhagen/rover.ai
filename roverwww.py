@@ -22,6 +22,18 @@ def wwwroot():
         document.getElementById("spany").innerHTML = _throttle;
         document.getElementById("spanx").innerHTML = _steering;
     }
+
+    function httpGetAsync(getUrl, callback)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() { 
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                callback(xmlHttp.responseText);
+        }
+        xmlHttp.open("GET", getUrl, true);
+        xmlHttp.send(null);
+    }
+
     </script>
     """
     hs += '<h2>Rover.ai</h2>'
@@ -30,6 +42,15 @@ def wwwroot():
     hs += '<div id="status">Loading...</div><br>'
     hs += '<span id="spanx">X</span>,<span id="spany">Y</span>>'
     hs += '<script>'
+
+    hs += """
+    function sendTouch() {
+        thisUrl = 'sendtouch?X=' + document.getElementById("spanx").innerHTML + '&Y=' + document.getElementById("spany").innerHTML;
+        httpGetAsync(thisUrl, null);
+
+    }
+    """
+
     hs += 'function updateStatus() {'
     hs += '$.ajax({\n'
     hs += 'url : "/getstatus",\n'
@@ -39,6 +60,7 @@ def wwwroot():
     hs += '});\n'
     hs += '}\n'
     hs += 'setInterval(updateStatus, 250);\n'
+    hs += 'setInterval(sendTouch, 500);\n'
     hs += '</script>'
     hs += '</body></html>'
     return hs
