@@ -17,16 +17,18 @@ def wwwroot():
     <script>
     function getPositions(ev) {
     if (ev == null) { ev = window.event }
-        _mouseX = ev.clientX;
-        _mouseY = ev.clientY;
-        alert(_mouseY);
+        _throttle = ev.touches[0].clientY;
+        _steering = ev.touches[0].clientX;
+        document.getElementById("spany").innerHTML = _throttle;
+        document.getElementById("spanx").innerHTML = _steering;
     }
     </script>
     """
     hs += '<h2>Rover.ai</h2>'
-    hs += '<img src="/stream?action=stream" onMouseMove="getPositions()";>'
+    hs += '<img src="/stream?action=stream" onTouchMove="getPositions()";>'
     hs += '<hr>'
-    hs += '<div id="status">Loading...</div>'
+    hs += '<div id="status">Loading...</div><br>'
+    hs += '<span id="spanx">X</span>,<span id="spany">Y</span>>'
     hs += '<script>'
     hs += 'function updateStatus() {'
     hs += '$.ajax({\n'
