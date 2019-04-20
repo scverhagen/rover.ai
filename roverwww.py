@@ -13,18 +13,18 @@ start_html = '<html><head><script src="https://code.jquery.com/jquery-3.3.1.min.
 @app.route('/')
 def wwwroot():
     hs = start_html
-#    hs += """
-#    <script>
-#    function getPositions(ev) {
-#    if (ev == null) { ev = window.event }
-#        _mouseX = ev.clientX;
-#        _mouseY = ev.clientY;
-#        alert(_mouseY);
-#    }
-#    </script>
-#    """
+    hs += """
+    <script>
+    function getPositions(ev) {
+    if (ev == null) { ev = window.event }
+        _mouseX = ev.clientX;
+        _mouseY = ev.clientY;
+        alert(_mouseY);
+    }
+    </script>
+    """
     hs += '<h2>Rover.ai</h2>'
-    hs += '<img src="/stream?action=stream" onMouseMove="getPositions();>'
+    hs += '<img src="/stream?action=stream" onMouseMove="getPositions()";>'
     hs += '<hr>'
     hs += '<div id="status">Loading...</div>'
     hs += '<script>'
