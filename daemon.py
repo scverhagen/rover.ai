@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import os, time
+import gpiozero
 import rovercom
 
 thisfilepath = os.path.dirname(__file__)
@@ -17,23 +18,13 @@ steering = 0 # (stopped)
 # range of 0 (stopped) to 10 (full throttle)
 throttle = 0
 
+distance_sensor = gpiozero.DistanceSensor(echo=17, trigger=4, max_distance=4)
+start_time = time.time()
+
 status = rovercom.status_fifo()
 
 def checkforvisioncommand():
     
-    # check for object in path of car:
-    #obj_dist = get_ultrasonic_reading()
-    obj_dist = 100
-    if obj_dist <= 100 and obj_dist > 50:
-        # slow down
-        return 'throttle ' + str(3)
-    elif obj_dist <= 50 and obj_dist > 25:
-        # slow down more
-        return 'throttle ' + str(1)
-    elif obj_dist <= 25:
-        # zero throttle (temp stop)
-        return 'throttle ' + str(0)
-
     # TODO:
     # pull image frame from camera
     # process with artificial neural network
@@ -52,6 +43,28 @@ def checkforvisioncommand():
 
     # unexpected result from artificial neural network--return ''
     return ''
+
+def checkultrasonic():
+    global start_time
+
+    if (time.time() - start_time) < 1:
+        return
+
+    obj_dist = distance_sensor.distance * 100
+    start_time = time.time()
+    
+    if obj_dist <= 200 and obj_dist > 150:
+        # slow down
+        return 'throttle ' + str(4)
+    elif obj_dist <= 50 and obj_dist > 25:
+        # slow down more
+        return 'throttle ' + str(2)
+    elif obj_dist <= 25 and obj_dist > 10:
+        # crawl
+        return 'throttle ' + str(1)
+    elif obj_dist <= 10:
+        # zero throttle (temp stop)
+        return 'throttle ' + str(0)
 
 def processcommand(cmd):
     global steering
@@ -116,7 +129,7 @@ def do_init():
 
 def mainloop():
     laststatus = None
-    
+   
     while (1):
         cmd = rovercom.checkforcommand()
         if cmd == '':
@@ -124,6 +137,8 @@ def mainloop():
         else:
             #print('Received command: ' + cmd)
             processcommand(cmd)
+
+        checkultrasonic()
 
         if autopilot == True:
             vcmd = checkforvisioncommand()

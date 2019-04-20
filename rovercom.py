@@ -10,6 +10,9 @@ fifobuffersize = 100
 def init_fifos():
     if not os.path.exists(cmdfifopath):
         os.mkfifo(cmdfifopath)
+    else:
+        os.remove(cmdfifopath)
+        os.mkfifo(cmdfifopath)
     
 def checkforcommand():
     try:
