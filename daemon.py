@@ -52,9 +52,12 @@ def checkforvisioncommand():
 def checkultrasonic():
     global start_time
     global hasDistanceSensor
+    global throttle
     
     if (time.time() - start_time) < 1:
         return
+
+    print(distance_sensor.distance * 100)
 
     if hasDistanceSensor == True:
         obj_dist = distance_sensor.distance * 100
@@ -65,21 +68,29 @@ def checkultrasonic():
     
     if obj_dist <= 200 and obj_dist > 150:
         # slow down
-        return 'throttle ' + str(4)
+        if throttle > 4:
+            return 'throttle ' + str(4)
     elif obj_dist <= 50 and obj_dist > 25:
         # slow down more
-        return 'throttle ' + str(2)
+        if throttle > 2:
+            return 'throttle ' + str(2)
     elif obj_dist <= 25 and obj_dist > 10:
         # crawl
-        return 'throttle ' + str(1)
-    elif obj_dist <= 10:
+        if throttle > 1:
+            return 'throttle ' + str(1)
+    elif obj_dist <= 15:
         # zero throttle (temp stop)
         return 'throttle ' + str(0)
+
+    return None
 
 def processcommand(cmd):
     global steering
     global throttle
     
+    if cmd == None:
+         return
+
     lcmd = cmd.lower()
     args = cmd.split()
     largs = lcmd.split()
@@ -148,7 +159,7 @@ def mainloop():
             #print('Received command: ' + cmd)
             processcommand(cmd)
 
-        checkultrasonic()
+        processcommand( checkultrasonic() )
 
         if autopilot == True:
             vcmd = checkforvisioncommand()
