@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 import os, time
-import gpiozero
 import rovercom
 
 thisfilepath = os.path.dirname(__file__)
@@ -18,7 +17,13 @@ steering = 0 # (stopped)
 # range of 0 (stopped) to 10 (full throttle)
 throttle = 0
 
-distance_sensor = gpiozero.DistanceSensor(echo=17, trigger=4, max_distance=4)
+hasDistanceSensor = True
+try:
+    import gpiozero
+    distance_sensor = gpiozero.DistanceSensor(echo=17, trigger=4, max_distance=4)
+except:
+    hasDistanceSensor = False
+
 start_time = time.time()
 
 status = rovercom.status_fifo()
@@ -46,11 +51,16 @@ def checkforvisioncommand():
 
 def checkultrasonic():
     global start_time
-
+    global hasDistanceSensor
+    
     if (time.time() - start_time) < 1:
         return
 
-    obj_dist = distance_sensor.distance * 100
+    if hasDistanceSensor == True:
+        obj_dist = distance_sensor.distance * 100
+    else:
+        obj_dist = 400
+        
     start_time = time.time()
     
     if obj_dist <= 200 and obj_dist > 150:
@@ -100,7 +110,7 @@ def processcommand(cmd):
                 throttle = 2
                 steering = 2
         return
-    
+      
     if largs[0] == 'steer':
         if len(args) > 1:
             if largs[1] == 'left':
