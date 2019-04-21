@@ -2,6 +2,7 @@
 import os, time
 import warnings
 import rovercom
+import hbridge
 
 thisfilepath = os.path.dirname(__file__)
 
@@ -74,17 +75,17 @@ def checkultrasonic():
     
     if obj_dist <= 200 and obj_dist > 150:
         # slow down
-        if throttle > 4:
-            return 'throttle ' + str(4)
-    elif obj_dist <= 50 and obj_dist > 25:
+        if throttle > 75:
+            return 'throttle ' + str(75)
+    elif obj_dist <= 150 and obj_dist > 125:
         # slow down more
-        if throttle > 2:
-            return 'throttle ' + str(2)
-    elif obj_dist <= 25 and obj_dist > 10:
+        if throttle > 50:
+            return 'throttle ' + str(50)
+    elif obj_dist <= 125 and obj_dist > 50:
         # crawl
-        if throttle > 1:
-            return 'throttle ' + str(1)
-    elif obj_dist <= 15:
+        if throttle > 30:
+            return 'throttle ' + str(30)
+    elif obj_dist <= 50:
         # zero throttle (temp stop)
         return 'throttle ' + str(0)
 
@@ -113,21 +114,23 @@ def processcommand(cmd):
         # stop resets steering and sets throttle to zero:
         steering = 1
         throttle = 0
+        hbridge.motor_off()
         return
 
     if largs[0] == 'move':
         if len(args) > 1:
             if largs[1] == 'left':
                 print('move left')
-                throttle = 2
+                throttle = 50
                 steering = 0
             elif largs[1] == 'forward':
                 print('move forward')
-                throttle = 5
+                hbridge.motor_forward()
+                throttle = 75
                 steering = 1
             elif largs[1] == 'right':
                 print('move right')
-                throttle = 2
+                throttle = 50
                 steering = 2
         return
       
@@ -151,10 +154,10 @@ def processcommand(cmd):
         return
 
 def do_init():
-    # TODO:
-    # init ultrasonic range sensor
     rovercom.init_fifos()
     print('Rover Daemon')
+    hbridge.motor_off()
+    hbridge.set_throttle(0)
     print('Init complete.')
 
 def mainloop():
@@ -186,6 +189,8 @@ def mainloop():
         elif steering == 2:
             curstatus = '->  '
         
+        hbridge.set_throttle(throttle)
+
         curstatus += str(throttle * 10) + '%'
         
         if laststatus != curstatus:
