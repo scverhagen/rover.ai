@@ -13,7 +13,10 @@ in2 = gpiozero.LED(pin_hb_in2)
 
 def set_throttle(percentvalue):
     global ena
-    ena.value = (percentvalue / 100)
+    #print(percentvalue /100)
+    ena.value = ( percentvalue / 100 )
+    if percentvalue == 0:
+        motor_off()
 
 def motor_off():
     global in1, in2

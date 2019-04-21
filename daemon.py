@@ -13,13 +13,14 @@ autopilot = False
 # 0 = steering left
 # 1 = steering center
 # 2 = steering right
-steering = 0 # (stopped)
+steering = 1 # (center)
 
 # throttle var:
 # range of 0 (stopped) to 10 (full throttle)
 throttle = 0
 
 hasDistanceSensor = False
+obj_dist = -1
 try:
     import gpiozero
     distance_sensor = gpiozero.DistanceSensor(echo=17, trigger=4, max_distance=4, partial=True)
@@ -61,30 +62,31 @@ def checkultrasonic():
     global start_time
     global hasDistanceSensor
     global throttle
-    
+    global obj_dist
+   
     if (time.time() - start_time) < 1:
         return
 
     if hasDistanceSensor == True:
-        obj_dist = distance_sensor.distance * 100
-        print(obj_dist)
+        obj_dist = round(distance_sensor.distance * 100)
+        #print(obj_dist)
     else:
         obj_dist = 400
         
     start_time = time.time()
     
-    if obj_dist <= 200 and obj_dist > 150:
+    if obj_dist <= 200 and obj_dist > 100:
         # slow down
+        if throttle > 85:
+            return 'throttle ' + str(85)
+    elif obj_dist <= 100 and obj_dist > 75:
+        # slow down more
         if throttle > 75:
             return 'throttle ' + str(75)
-    elif obj_dist <= 150 and obj_dist > 125:
-        # slow down more
-        if throttle > 50:
-            return 'throttle ' + str(50)
-    elif obj_dist <= 125 and obj_dist > 50:
+    elif obj_dist <= 75 and obj_dist > 50:
         # crawl
-        if throttle > 30:
-            return 'throttle ' + str(30)
+        if throttle > 60:
+            return 'throttle ' + str(60)
     elif obj_dist <= 50:
         # zero throttle (temp stop)
         return 'throttle ' + str(0)
@@ -126,12 +128,17 @@ def processcommand(cmd):
             elif largs[1] == 'forward':
                 print('move forward')
                 hbridge.motor_forward()
-                throttle = 75
+                throttle = 100
                 steering = 1
             elif largs[1] == 'right':
                 print('move right')
                 throttle = 50
                 steering = 2
+            elif largs[1] == 'backwards':
+                print('move backwards')
+                hbridge.motor_reverse()
+                throttle = 100
+                steering = 1
         return
       
     if largs[0] == 'steer':
@@ -151,6 +158,8 @@ def processcommand(cmd):
         if len(args) > 1:
             print('Setting throttle to ' + args[1])
             throttle = int(args[1])
+            if throttle == 0:
+                hbridge.motor_off()
         return
 
 def do_init():
@@ -161,7 +170,7 @@ def do_init():
     print('Init complete.')
 
 def mainloop():
-    global hasDistanceSensor
+    global hasDistanceSensor, obj_dist, throttle, steering
     laststatus = None
    
     while (1):
@@ -191,7 +200,8 @@ def mainloop():
         
         hbridge.set_throttle(throttle)
 
-        curstatus += str(throttle * 10) + '%'
+        curstatus += 's_' + str(throttle) + '%'
+        curstatus += ' d_' + str(obj_dist)
         
         if laststatus != curstatus:
             #print('updating status')

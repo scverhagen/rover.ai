@@ -41,6 +41,11 @@ def wwwroot():
     hs += '<hr>'
     hs += '<div id="status">Loading...</div><br>'
     hs += '<span id="spanx">X</span>,<span id="spany">Y</span>>'
+    hs += """
+<button onclick="httpGetAsync('/sendcommand?cmd=move forward', null);">Move Forward</button>
+<button onclick="httpGetAsync('/sendcommand?cmd=stop', null);">STOP</button>
+<button onclick="httpGetAsync('/sendcommand?cmd=move backwards', null);">Move Backwards</button>
+"""
     hs += '<script>'
 
     hs += """
