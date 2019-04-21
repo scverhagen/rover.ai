@@ -22,8 +22,12 @@ hasDistanceSensor = False
 try:
     import gpiozero
     distance_sensor = gpiozero.DistanceSensor(echo=17, trigger=4, max_distance=4, partial=True)
-    if int(distance_sensor.distance) == 0:
-        raise ValueError('No distance sensor has been found.')
+    for x in range(1, 5):
+        time.sleep(1)
+        if int(distance_sensor.distance) > 0:
+            print('Distance sensor activated.')
+            hasDistanceSensor = True
+            break
 except:
     hasDistanceSensor = False
     print('No distance sensor found.  Disabling ultrasonic features...')
@@ -60,10 +64,9 @@ def checkultrasonic():
     if (time.time() - start_time) < 1:
         return
 
-    print('b' + str(distance_sensor.distance * 100) + 'b')
-
     if hasDistanceSensor == True:
         obj_dist = distance_sensor.distance * 100
+        print(obj_dist)
     else:
         obj_dist = 400
         
