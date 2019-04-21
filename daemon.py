@@ -105,6 +105,9 @@ def processcommand(cmd):
     if lcmd == 'quit':
         exit()
 
+    if lcmd == 'poweroff':
+        os.system('poweroff')
+
     if lcmd == 'stop':
         print('stop')
         # stop resets steering and sets throttle to zero:
