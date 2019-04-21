@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import os, time
+import warnings
 import rovercom
 
 thisfilepath = os.path.dirname(__file__)
@@ -17,15 +18,17 @@ steering = 0 # (stopped)
 # range of 0 (stopped) to 10 (full throttle)
 throttle = 0
 
-hasDistanceSensor = True
+hasDistanceSensor = False
 try:
     import gpiozero
-    distance_sensor = gpiozero.DistanceSensor(echo=17, trigger=4, max_distance=4)
+    distance_sensor = gpiozero.DistanceSensor(echo=17, trigger=4, max_distance=4, partial=True)
+    if int(distance_sensor.distance) == 0:
+        raise ValueError('No distance sensor has been found.')
 except:
     hasDistanceSensor = False
+    print('No distance sensor found.  Disabling ultrasonic features...')
 
 start_time = time.time()
-
 status = rovercom.status_fifo()
 
 def checkforvisioncommand():
@@ -57,7 +60,7 @@ def checkultrasonic():
     if (time.time() - start_time) < 1:
         return
 
-    print(distance_sensor.distance * 100)
+    print('b' + str(distance_sensor.distance * 100) + 'b')
 
     if hasDistanceSensor == True:
         obj_dist = distance_sensor.distance * 100
@@ -149,9 +152,11 @@ def do_init():
     print('Init complete.')
 
 def mainloop():
+    global hasDistanceSensor
     laststatus = None
    
     while (1):
+        #print(hasDistanceSensor)
         cmd = rovercom.checkforcommand()
         if cmd == '':
             time.sleep(.25)
@@ -159,7 +164,8 @@ def mainloop():
             #print('Received command: ' + cmd)
             processcommand(cmd)
 
-        processcommand( checkultrasonic() )
+        if hasDistanceSensor == True:
+            processcommand( checkultrasonic() )
 
         if autopilot == True:
             vcmd = checkforvisioncommand()
