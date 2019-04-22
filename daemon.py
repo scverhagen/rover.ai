@@ -19,7 +19,9 @@ laststeering = 0 # used to detect steering changes
 steering_servo = gpiozero.Servo(27)
 
 # throttle var:
-# range of 0 (stopped) to 10 (full throttle)
+# full throttle in reverse = -100
+# stopped = 0
+# full throttle forwards = 100
 throttle = 0
 
 hasDistanceSensor = False
@@ -36,6 +38,14 @@ try:
 except:
     hasDistanceSensor = False
     print('No distance sensor found.  Disabling ultrasonic features...')
+
+hasGameController = False
+game_controller = None
+devices = [evdev.InputDevice(fn) for fn in evdev.list_devices()]
+for thisdev in devices:
+    if 'gamepad' in lower(device.name):
+        game_controller = evdev.InputDevice(thisdev.fn)
+        hasGameController = True
 
 start_time = time.time()
 status = rovercom.status_fifo()
@@ -60,6 +70,27 @@ def checkforvisioncommand():
 
     # unexpected result from artificial neural network--return ''
     return ''
+
+def checkgamepad():
+    global game_controller
+    ev = game_controller.read_one()
+
+    # no event in queue:
+    if ev == None:
+        return None
+
+    # debug for now:
+    print('New bluetooth game controller event:')
+    print('Type' + str(ev.type))
+    print('Code' + str(ev.code))
+    print('Value' + str(ev.value))
+
+    key = ''
+    if key == 'up':
+        return 'move forward'
+
+    if key == 'down':
+        return 'move backwards'
 
 def checkultrasonic():
     global start_time
@@ -119,28 +150,25 @@ def processcommand(cmd):
         # stop resets steering and sets throttle to zero:
         steering = 1
         throttle = 0
-        hbridge.motor_off()
         return
 
     if largs[0] == 'move':
         if len(args) > 1:
             if largs[1] == 'left':
                 print('move left')
-                throttle = 50
+                throttle = 75
                 steering = -1
             elif largs[1] == 'forward':
                 print('move forward')
-                hbridge.motor_forward()
                 throttle = 100
                 steering = 0
             elif largs[1] == 'right':
                 print('move right')
-                throttle = 50
+                throttle = 75
                 steering = 1
             elif largs[1] == 'backwards':
                 print('move backwards')
-                hbridge.motor_reverse()
-                throttle = 100
+                throttle = -75
                 steering = 0
         return
 
@@ -171,8 +199,6 @@ def processcommand(cmd):
         if len(args) > 1:
             print('Setting throttle to ' + args[1])
             throttle = int(args[1])
-            if throttle == 0:
-                hbridge.motor_off()
         return
 
 def do_init():
@@ -187,7 +213,7 @@ def mainloop():
     laststatus = None
    
     while (1):
-        #print(hasDistanceSensor)
+
         cmd = rovercom.checkforcommand()
         if cmd == '':
             time.sleep(.25)
@@ -198,6 +224,10 @@ def mainloop():
         # check distance senor (if equipped)
         if hasDistanceSensor == True:
             processcommand( checkultrasonic() )
+
+        # game controller (if equipped)
+        if hasGameController == True:
+            processcommand( checkgamepad() )
 
         if autopilot == True:
             vcmd = checkforvisioncommand()
