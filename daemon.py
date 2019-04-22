@@ -127,13 +127,7 @@ def checkultrasonic():
 
     return None
 
-def processcommand(cmd):
-    global steering
-    global throttle
-    
-    if cmd == None:
-         return
-
+def processacommand(cmd):
     lcmd = cmd.lower()
     args = cmd.split()
     largs = lcmd.split()
@@ -151,6 +145,20 @@ def processcommand(cmd):
         steering = 1
         throttle = 0
         return
+
+    if lcmd == 'hard stop':
+        # emergency stop
+        c = []
+        c.append('throttle -75')
+        c.append('wait 1')
+        c.append('stop')
+        processcommand(c)
+    
+    if largs[0] == 'wait':
+        if len(args) > 1:
+            time.sleep(args[1])
+        else:
+            time.sleep(1)
 
     if largs[0] == 'move':
         if len(args) > 1:
@@ -212,6 +220,17 @@ def processcommand(cmd):
             throttle = throttle + 10
             if throttle > 100:
                 throttle = 100
+
+def processcommand(cmds):
+    if cmds == None:
+         return
+
+    if isinstance(cmds, str):
+        cmds = []
+        cmds.append(str)
+        
+    for cmd in cmds:
+        processacommand(cmd)
 
 def do_init():
     rovercom.init_fifos()
