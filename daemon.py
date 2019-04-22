@@ -201,6 +201,18 @@ def processcommand(cmd):
             throttle = int(args[1])
         return
 
+    if largs[0] == 'slow':
+        if largs[1] == 'down':
+            throttle = throttle - 10
+            if throttle < 0:
+                throttle = 0
+
+    if largs[0] == 'speed':
+        if largs[1] == 'up':
+            throttle = throttle + 10
+            if throttle > 100:
+                throttle = 100
+
 def do_init():
     rovercom.init_fifos()
     print('Rover Daemon')
