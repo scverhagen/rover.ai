@@ -92,6 +92,30 @@ def checkgamepad():
     if key == 'down':
         return 'move backwards'
 
+    if key == 'up left':
+        c = []
+        c.append('move forward')
+        c.append('steer left')
+        return c
+
+    if key == 'up right':
+        c = []
+        c.append('move forward')
+        c.append('steer right')
+        return c
+
+    if key == 'down left':
+        c = []
+        c.append('move backwards')
+        c.append('steer left')
+        return c
+
+    if key == 'down right':
+        c = []
+        c.append('move backwards')
+        c.append('steer right')
+        return c
+
 def checkultrasonic():
     global start_time
     global hasDistanceSensor
