@@ -3,6 +3,7 @@ import os, time
 import warnings
 import rovercom
 import hbridge
+import servo
 
 thisfilepath = os.path.dirname(__file__)
 
@@ -10,10 +11,12 @@ thisfilepath = os.path.dirname(__file__)
 autopilot = False
 
 # steering var:
-# 0 = steering left
-# 1 = steering center
-# 2 = steering right
-steering = 1 # (center)
+# -1 = steering left
+# 0 = steering center
+# 1 = steering right
+steering = 0 # (center)
+laststeering = 0 # used to detect steering changes
+steering_servo = gpiozero.Servo(27)
 
 # throttle var:
 # range of 0 (stopped) to 10 (full throttle)
@@ -124,34 +127,44 @@ def processcommand(cmd):
             if largs[1] == 'left':
                 print('move left')
                 throttle = 50
-                steering = 0
+                steering = -1
             elif largs[1] == 'forward':
                 print('move forward')
                 hbridge.motor_forward()
                 throttle = 100
-                steering = 1
+                steering = 0
             elif largs[1] == 'right':
                 print('move right')
                 throttle = 50
-                steering = 2
+                steering = 1
             elif largs[1] == 'backwards':
                 print('move backwards')
                 hbridge.motor_reverse()
                 throttle = 100
-                steering = 1
+                steering = 0
         return
-      
+
+    if largs[0] == 'steerval':
+        if len(args) > 1:
+            print('steerval ' + args[1])
+            steering = int(args[1])
+
+    if largs[0] == 'steerdeg':
+        if len(args) > 1:
+            print('steerdeg ' + args[1])
+            steering = servo.deg_to_val(int(args[1]))
+
     if largs[0] == 'steer':
         if len(args) > 1:
             if largs[1] == 'left':
                 print('steer left')
-                steering = 0
+                steering = -1
             elif largs[1] == 'center':
                 print('steer center')
-                steering = 1
+                steering = 0
             elif largs[1] == 'right':
                 print('steer right')
-                steering = 2
+                steering = 1
         return
     
     if largs[0] == 'throttle':
@@ -182,29 +195,36 @@ def mainloop():
             #print('Received command: ' + cmd)
             processcommand(cmd)
 
+        # check distance senor (if equipped)
         if hasDistanceSensor == True:
             processcommand( checkultrasonic() )
 
         if autopilot == True:
             vcmd = checkforvisioncommand()
             processcommand(vcmd)
+
+        # control motor:
+        hbridge.set_throttle(throttle)
+
+        # set steering:
+        if steering != laststeering:
+            servo.set_steering_servo_val(steering_servo, steering)
+            laststeering = steering
         
         # build status
         curstatus = ''
-        if steering == 0:
+        c90 = round(steering)
+        if c90 == -1:
             curstatus = '<-  '
-        elif steering == 1:
+        elif c90 == 0:
             curstatus = '^   '
-        elif steering == 2:
+        elif c90 == 1:
             curstatus = '->  '
-        
-        hbridge.set_throttle(throttle)
 
         curstatus += 's_' + str(throttle) + '%'
         curstatus += ' d_' + str(obj_dist)
         
         if laststatus != curstatus:
-            #print('updating status')
             status.setstatus(curstatus)
             laststatus = curstatus
 
