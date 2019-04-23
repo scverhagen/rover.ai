@@ -28,19 +28,20 @@ steering_servo = gpiozero.Servo(27)
 throttle = 0
 
 hasDistanceSensor = False
+distance_sensor = None
 obj_dist = -1
-try:
-    import gpiozero
-    distance_sensor = gpiozero.DistanceSensor(echo=17, trigger=4, max_distance=4, partial=True)
-    for x in range(1, 5):
-        time.sleep(1)
-        if int(distance_sensor.distance) > 0:
-            print('Distance sensor activated.')
-            hasDistanceSensor = True
-            break
-except:
-    hasDistanceSensor = False
-    print('No distance sensor found.  Disabling ultrasonic features...')
+#try:
+distance_sensor = gpiozero.DistanceSensor(echo=17, trigger=4, max_distance=4, partial=True)
+for x in range(1, 8):
+    print(distance_sensor.distance)
+    time.sleep(1)
+    if int(distance_sensor.distance * 100) > 0:
+        print('Distance sensor activated.')
+        hasDistanceSensor = True
+        break
+#except:
+#    hasDistanceSensor = False
+#    print('No distance sensor found.  Disabling ultrasonic features...')
 
 hasGameController = False
 game_controller = None
@@ -155,6 +156,7 @@ def checkultrasonic():
     return None
 
 def processacommand(cmd):
+    global throttle, steering
     lcmd = cmd.lower()
     args = cmd.split()
     largs = lcmd.split()
@@ -170,7 +172,7 @@ def processacommand(cmd):
     if lcmd == 'stop':
         print('stop')
         # stop resets steering and sets throttle to zero:
-        steering = 1
+        steering = 0
         throttle = 0
         return
 
@@ -306,7 +308,10 @@ def mainloop():
         if c90 == -1:
             curstatus = '<-  '
         elif c90 == 0:
-            curstatus = '^   '
+            if throttle < 0:
+                curstatus = '\/  '
+            elif throttle > 0:
+                curstatus = '/\   '
         elif c90 == 1:
             curstatus = '->  '
 
