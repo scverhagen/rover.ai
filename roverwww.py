@@ -45,6 +45,8 @@ def wwwroot():
 <button onclick="httpGetAsync('/sendcommand?cmd=move forward', null);">Move Forward</button>
 <button onclick="httpGetAsync('/sendcommand?cmd=stop', null);">STOP</button>
 <button onclick="httpGetAsync('/sendcommand?cmd=move backwards', null);">Move Backwards</button>
+<hr>
+<button onclick="httpGetAsync('/sendcommand?cmd=poweroff', null);">Power off</button>
 """
     hs += '<script>'
 

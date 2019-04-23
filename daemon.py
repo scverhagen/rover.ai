@@ -1,6 +1,9 @@
 #!/usr/bin/python3
 import os, time
 import warnings
+import evdev
+import gpiozero
+
 import rovercom
 import hbridge
 import servo
@@ -161,6 +164,7 @@ def processacommand(cmd):
         exit()
 
     if lcmd == 'poweroff':
+        print('Powering off--good bye!')
         os.system('poweroff')
 
     if lcmd == 'stop':
@@ -245,16 +249,16 @@ def processacommand(cmd):
             if throttle > 100:
                 throttle = 100
 
-def processcommand(cmds):
-    if cmds == None:
+def processcommand(cmd):
+    if cmd == None:
          return
 
-    if isinstance(cmds, str):
-        cmds = []
-        cmds.append(str)
+    cmds = []
+    if isinstance(cmd, str):
+        cmds.append(cmd)
         
-    for cmd in cmds:
-        processacommand(cmd)
+    for thiscmd in cmds:
+        processacommand(thiscmd)
 
 def do_init():
     rovercom.init_fifos()
@@ -264,7 +268,7 @@ def do_init():
     print('Init complete.')
 
 def mainloop():
-    global hasDistanceSensor, obj_dist, throttle, steering
+    global hasDistanceSensor, obj_dist, throttle, steering, laststeering
     laststatus = None
    
     while (1):

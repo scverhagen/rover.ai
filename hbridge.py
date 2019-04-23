@@ -21,7 +21,7 @@ def set_throttle(thisthrottle):
     elif thisthrottle == 0:
         motor_off()
 
-    ena.value = abs( percentvalue / 100 )
+    ena.value = abs( thisthrottle / 100 )
 
 def motor_off():
     global in1, in2
