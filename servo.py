@@ -9,10 +9,15 @@ import gpiozero
 # steer_center_deg = 180
 
 # adjust steering trim here:
-steering_trim = 0
+steering_trim = -.1
 
 def set_steering_servo_val(servo, servoval):
-    servo.value = servoval + steering_trim
+    newval = -(servoval + steering_trim)
+    if newval > 1:
+        newval = 1
+    if newval < -1:
+        newval = -1
+    servo.value = newval
 
 def val_to_deg(sv):
     return (sv + 1) * 90
