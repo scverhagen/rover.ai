@@ -1,5 +1,6 @@
 # rover.ai files:
 rover_status
+nn/training_data/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
