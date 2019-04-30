@@ -19,3 +19,11 @@ def convertframefornn(img):
     # apply mask to grayscale image
     target = cv2.bitwise_and(image2bw,image2bw, mask=mask)
     return target
+
+class ann:
+    def __init__(self):
+        self.thisnet = cv2.ml.ANN_MLP_create()
+        self.thisnet.setLayerSizes( (640*240), 16, 4)
+        self.thisnet.setTrainMethod(cv2.ml.ANN_MLP_BACKPROP)
+        self.thisnet.setActivationFunction(cv2.ml.ANN_MLP_SIGMOID_SYM, cv2.ml.TrainFlags.NO_INPUT_SCALE, cv2.ml.TrainingMethods.BACKPROP)
+
