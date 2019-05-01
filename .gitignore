@@ -1,6 +1,6 @@
 # rover.ai files:
 rover_status
-nn/training_data/
+nn/training_data/rover.pkl
 nn/nn_model
 
 # Byte-compiled / optimized / DLL files
