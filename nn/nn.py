@@ -23,7 +23,7 @@ def convertframefornn(img):
 
     # apply mask to grayscale image
     target = cv2.bitwise_and(image2bw,image2bw, mask=mask)
-    return target
+    return target.flatten()
 
 def label_to_onehot(count, labelnum):
     onehot = []
@@ -37,7 +37,7 @@ def label_to_onehot(count, labelnum):
 class ann:
     def __init__(self):
         self.thisnet = cv2.ml.ANN_MLP_create()
-        self.thisnet.setLayerSizes(np.int32([(640*240), 16, 4]))
+        self.thisnet.setLayerSizes(np.int32([(640*240), 48, 4]))
         self.thisnet.setTrainMethod(cv2.ml.ANN_MLP_BACKPROP)
         self.thisnet.setActivationFunction(cv2.ml.ANN_MLP_SIGMOID_SYM, 2, 0)
 
@@ -45,6 +45,13 @@ class ann:
         #print(training_data.data['X'])
         #print(training_data.data['y'])
         self.thisnet.train(np.float32(training_data.data['X']), cv2.ml.ROW_SAMPLE, np.float32(training_data.data['y']))
+        
+    def predict(self, X):
+        ret, resp = self.thisnet.predict(np.float32(X))
+        return resp.argmax(-1)
+
+    def load(self, filename):
+        self.thisnet = cv2.ml.ANN_MLP_load(filename)
 
     def save(self, filename):
         self.thisnet.save(filename)
@@ -52,7 +59,7 @@ class ann:
 class training_data(object):
     def __init__(self):
         labeldict = {}
-        data = pd.DataFrame()
+        data = {}
 
     def load_pickle(self, filename):
         #clear/reset class vars:
@@ -106,7 +113,7 @@ class training_data(object):
                 pics = glob.glob(os.path.join(label, '*.jpg'))
                 for pic in pics:
                     img = cv2.imread(pic)
-                    img2 = convertframefornn(img).flatten()
+                    img2 = convertframefornn(img)
 
                     X.append(img2)
                     y.append(label_to_onehot(labelcount, int(thislabel)))
