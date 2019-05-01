@@ -47,7 +47,7 @@ class ann:
         self.thisnet.train(np.float32(training_data.data['X']), cv2.ml.ROW_SAMPLE, np.float32(training_data.data['y']))
 
     def save(self, filename):
-        self.ann.save(filename)
+        self.thisnet.save(filename)
 
 class training_data(object):
     def __init__(self):
