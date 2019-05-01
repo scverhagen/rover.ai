@@ -112,9 +112,9 @@ class training_data(object):
                     y.append(label_to_onehot(labelcount, int(thislabel)))
                     samplecount += 1
 
-        # add arrays to dictionary:
-        datadict['X'] = np.array(X)#.reshape(-1,1)
-        datadict['y'] = np.array(y)#.reshape(-1,1)
+        # add arrays to dictionary (with rescaled X data):
+        datadict['X'] = (np.array(X) / 255) 
+        datadict['y'] = np.array(y)
 
         # Populate training_data class and write to file:
 
