@@ -116,7 +116,8 @@ class training_data(object):
                     img2 = convertframefornn(img)
 
                     X.append(img2)
-                    y.append(label_to_onehot(labelcount, int(thislabel)))
+                    #y.append(label_to_onehot(labelcount, int(thislabel)))
+                    y.append(int(thislabel))
                     samplecount += 1
 
         # add arrays to dictionary (with rescaled X data):
@@ -127,3 +128,4 @@ class training_data(object):
 
         self.data = datadict
         return samplecount
+    

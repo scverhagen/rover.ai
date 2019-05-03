@@ -49,7 +49,7 @@ def main():
                 print(f"{pic} deleted.")
 
             count += 1
-        cv2.destroyWindow(thislabel)
+#        cv2.destroyWindow(thislabel)
 
     cv2.destroyAllWindows()
     print('done.')

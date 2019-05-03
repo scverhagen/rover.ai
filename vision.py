@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import os
-import cv2
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
 
 import nn.nn
 
@@ -18,20 +19,19 @@ def decision_from_frame(img):
     img2 = nn.nn.convertframefornn(img)
 
 if __name__ == '__main__':
-    #td = nn.nn.training_data()
-    #print('loading training pickle...')
-    #td.load_pickle(os.path.join(thisfilepath, 'nn', 'training_data', 'rover.pkl'))
+    print('Loading training data...')
+    td = nn.nn.training_data()
+    td.load_pickle(os.path.join(thisfilepath, 'nn' , 'training_data', 'rover.pkl'))
     
-    picfile = os.path.join(thisfilepath, 'nn', 'sample_data', '3', 'i3_412.jpg')
-
-    img = cv2.imread(picfile)
-    img2 = nn.nn.convertframefornn(img)
+    X_train, X_test, y_train, y_test = train_test_split(td.data['X'], td.data['y'], test_size=0.33, random_state=42)
     
-    print('making prediction...')
-
-    X = []
-    X.append(img2)
-        
-    print('predicted vals:')
-    print(thisnet.predict(X))
+    td.data['X'] = X_train
+    td.data['y'] = y_train
     
+    print('Training neural network...')
+    thisnet.train(td)
+    
+    y_pred = thisnet.predict(X_test)
+    print(y_pred)
+    print(y_test[0])
+    print(confusion_matrix(y_test, y_pred))
