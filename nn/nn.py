@@ -49,22 +49,25 @@ class dnn_tf:
         numentries, px = td.X_train.shape
         numentries, outlayersize = td.y_train.shape
         
-        self.thisnet = keras.Sequential([keras.layers.Flatten(input_shape=(153600, )), keras.layers.Dense(128, activation=tf.nn.sigmoid), keras.layers.Dense(outlayersize, activation=tf.nn.sigmoid)])
-        self.thisnet.compile(optimizer='sgd', loss=keras.losses.sparse_categorical_crossentropy, metrics=['accuracy'])
-        self.thisnet.fit(td.X_train, td.y_train.argmax(-1), epochs=20)
+        self.thisnet = keras.Sequential([keras.layers.Flatten(input_shape=(153600, )), keras.layers.Dense(196, activation=tf.nn.sigmoid), keras.layers.Dense(outlayersize, activation=tf.nn.sigmoid)])
+        # 88.8% self.thisnet.compile(optimizer=tf.train.AdamOptimizer(learning_rate=0.015), loss=keras.losses.sparse_categorical_crossentropy, metrics=['accuracy'])
+        # 81% self.thisnet.compile(optimizer=tf.train.AdagradOptimizer(learning_rate=0.005), loss=keras.losses.sparse_categorical_crossentropy, metrics=['accuracy'])
+
+        # 92.6%:
+        self.thisnet.compile(optimizer=tf.train.RMSPropOptimizer(learning_rate=0.03), loss=keras.losses.sparse_categorical_crossentropy, metrics=['accuracy'])
+        self.thisnet.fit(td.X_train, td.y_train.argmax(-1), epochs=25)
         
     def predict(self, X):
         y = self.thisnet.predict(X)
         return y
 
     def load(self, filename):
-        pass
-        #self.thisnet = cv2.ml.ANN_MLP_load(filename)
+        self.thisnet = tf.contrib.saved_model.load_keras_model(filename)
+        self.thisnet.compile(optimizer=tf.train.RMSPropOptimizer(learning_rate=0.03), loss=keras.losses.sparse_categorical_crossentropy, metrics=['accuracy'])
 
     def save(self, filename):
-        #with tf.Session(graph=graph) as sess:
-        #    saver = tf.train.Saver()
-        #self.thisnet.save(filename)
+        saved_model_path = tf.contrib.saved_model.save_keras_model(self.thisnet, filename)
+        
         pass
 
 class ann:

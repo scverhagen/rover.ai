@@ -25,10 +25,6 @@ if __name__ == '__main__':
     
     thisnet.train(td)
     
-    print('Saving model...')
-    nnfilename = os.path.join(thisfilepath, 'nn_model')
-    thisnet.save(nnfilename)
-    
     endtimer = time.time()
     secs = round(endtimer - starttimer, 2)
     print(f"Neural network training completed in {secs} seconds.")
@@ -40,7 +36,11 @@ if __name__ == '__main__':
     
     #y_true = y.argmax(-1)
     accuracy = np.mean(y.argmax(-1) == td.y_test.argmax(-1))
-    print(accuracy)
+    print('Model accuracy is: ' + str(accuracy))
+
+    print('Saving model...')
+    nnfilename = os.path.join(thisfilepath, 'nn_model')
+    #thisnet.save(nnfilename)
     
 
     exit()
