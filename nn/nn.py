@@ -2,6 +2,8 @@
 import glob
 import os
 from sklearn.model_selection import train_test_split
+import tensorflow as tf
+from tensorflow import keras
 import pickle
 import numpy as np
 import pandas as pd
@@ -11,7 +13,7 @@ def convertframefornn(img=None, flatten=True):
     image2 = img[240:480, 0:640]
     
     # blur the image:
-    image2 = cv2.GaussianBlur(image2, (5, 5), 0)
+    #image2 = cv2.GaussianBlur(image2, (5, 5), 0)
 
     # convert the image to grayscale:
     image2bw = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
@@ -37,6 +39,32 @@ def label_to_onehot(count, labelnum):
         else:
             onehot.append(0)
     return onehot
+
+class dnn_tf:
+    def __init__(self):
+        pass
+
+    def train(self, td):
+        numentries, px = td.X_train.shape
+        numentries, outlayersize = td.y_train.shape
+        
+        self.thisnet = keras.Sequential([keras.layers.Flatten(input_shape=(153600, )), keras.layers.Dense(128, activation=tf.nn.sigmoid), keras.layers.Dense(outlayersize, activation=tf.nn.sigmoid)])
+        self.thisnet.compile(optimizer='sgd', loss=keras.losses.sparse_categorical_crossentropy, metrics=['accuracy'])
+        self.thisnet.fit(td.X_train, td.y_train.argmax(-1), epochs=10)
+        
+    def predict(self, X):
+        y = self.thisnet.predict(X)
+        return y
+
+    def load(self, filename):
+        pass
+        #self.thisnet = cv2.ml.ANN_MLP_load(filename)
+
+    def save(self, filename):
+        #with tf.Session(graph=graph) as sess:
+        #    saver = tf.train.Saver()
+        #self.thisnet.save(filename)
+        pass
 
 class ann:
     def __init__(self):

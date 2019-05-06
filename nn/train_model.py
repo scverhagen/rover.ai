@@ -20,7 +20,7 @@ if __name__ == '__main__':
     td.load_pickle(picklefilename)
     
     print('Initializing neural network...')
-    thisnet = nn.ann()
+    thisnet = nn.dnn_tf()
     print('Training...')
     
     thisnet.train(td)
@@ -33,17 +33,14 @@ if __name__ == '__main__':
     secs = round(endtimer - starttimer, 2)
     print(f"Neural network training completed in {secs} seconds.")
     print('Testing model accuracy...')
-    print(td.X_test.max())
     y = thisnet.predict(td.X_test)
     #print(y.argmax(-1))
-    print(y)
+    #print(y)
     #print(td.y_test.argmax(-1))
     
     #y_true = y.argmax(-1)
     accuracy = np.mean(y.argmax(-1) == td.y_test.argmax(-1))
     print(accuracy)
     
-    #print(td.y_test)
-    #print(y)
 
     exit()
