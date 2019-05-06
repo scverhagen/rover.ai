@@ -8,6 +8,8 @@ import pickle
 import numpy as np
 import pandas as pd
 
+thisfilepath = os.path.dirname(__file__)
+
 def convertframefornn(img=None, flatten=True):
     # crop the image:
     image2 = img[240:480, 0:640]
@@ -61,14 +63,21 @@ class dnn_tf:
         y = self.thisnet.predict(X)
         return y
 
-    def load(self, filename):
+    def load(self, filename=''):
+        if filename == '':
+            dirs = glob.glob(os.path.join(thisfilepath, 'nn_model', '*'))
+            dirs.sort()
+            for dir in dirs:
+                if os.path.isdir(dir) == True:
+                    filename = dir
+
         self.thisnet = tf.contrib.saved_model.load_keras_model(filename)
         self.thisnet.compile(optimizer=tf.train.RMSPropOptimizer(learning_rate=0.03), loss=keras.losses.sparse_categorical_crossentropy, metrics=['accuracy'])
 
     def save(self, filename):
+        if filename == '':
+            filename = os.path.join(thisfilepath, 'nn_model')
         saved_model_path = tf.contrib.saved_model.save_keras_model(self.thisnet, filename)
-        
-        pass
 
 class ann:
     def __init__(self):
@@ -88,10 +97,12 @@ class ann:
         ret, resp = self.thisnet.predict(np.float32(X))
         return resp
 
-    def load(self, filename):
+    def load(self, filename=''):
+        if filename == '':
+            filename = os.path.join(thisfilepath, 'nn_model')
         self.thisnet = cv2.ml.ANN_MLP_load(filename)
 
-    def save(self, filename):
+    def save(self, filename=''):
         self.thisnet.save(filename)
 
 class training_data(object):

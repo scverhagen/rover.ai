@@ -2,6 +2,7 @@
 import os
 import pandas as pd
 import numpy as np
+import cv2
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 
@@ -9,35 +10,39 @@ import nn.nn
 
 thisfilepath = os.path.dirname(__file__)
 
-thisnet = nn.nn.ann()
-thisnet.load(os.path.join(thisfilepath, 'nn', 'nn_model'))
+print('Loading neural network...')
+thisnet = nn.nn.dnn_tf()
+thisnet.load()
 
 def decision_from_frame(img):
-    # [1,0,0,0] stop
-    # [0,1,0,0] forward
-    # [0,0,1,0] left
-    # [0,0,0,1] right
+    # 0 forward
+    # 1 left
+    # 2 right
 
-    img2 = nn.nn.convertframefornn(img)
+    img2 = nn.nn.convertframefornn(img, flatten=True)
 
-if __name__ == '__main__':
+    X = np.float32(img2)
+    X.resize(153600,)
+    #print(str(img2.shape))
+
+    y = thisnet.predict(X)
+    return y.argmax(-1)
+
+def training_test():
     print('Loading training data...')
     td = nn.nn.training_data()
     td.load_pickle(os.path.join(thisfilepath, 'nn', 'training_data', 'rover.pkl'))
 
-    #print('X_train Data')
-    #print('Shape: ' + str(td.X_train.shape))
-    #print('Type: ' + str(type(td.X_train)))
-    #print(td.X_train)
-    #print(' ')
-    #print('y_train Data')
-    #print('Shape: ' + str(td.y_train.shape))
-    #print('Type: ' + str(type(td.y_train)))
+    y = thisnet.predict(td.X_test).argmax(-1)
+    y_test = td.y_test.argmax(-1)
 
-    print('Training neural network...')
-    thisnet.train(td)
-    
-    #y_pred = thisnet.predict(X_test)
-    #print(y_pred)
-    #print(y_test[0])
-    #print(confusion_matrix(y_test, y_pred))
+    acc = accuracy = (np.mean(y == y_test) * 100)
+    print('y vs y_test:')
+    print('Accuracy: ' + str(round(acc, 1)) + '%')
+
+if __name__ == '__main__':
+    print('Testing random image:')
+
+    img = cv2.imread(os.path.join(thisfilepath, 'nn', 'sample_data', '0', 'i_219.jpg'))
+    dec = decision_from_frame(img)
+    print(dec)

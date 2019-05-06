@@ -40,7 +40,6 @@ if __name__ == '__main__':
 
     print('Saving model...')
     nnfilename = os.path.join(thisfilepath, 'nn_model')
-    #thisnet.save(nnfilename)
-    
+    thisnet.save()
 
     exit()
