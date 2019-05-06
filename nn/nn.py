@@ -23,6 +23,7 @@ def convertframefornn(img=None, flatten=True):
     green_min = (60, 70, 100)
     green_max = (95, 150, 250)
     mask = cv2.inRange(hsv, green_min, green_max)
+    
 
     # apply mask to grayscale image
     target = cv2.bitwise_and(image2bw,image2bw, mask=mask)
@@ -50,7 +51,7 @@ class dnn_tf:
         
         self.thisnet = keras.Sequential([keras.layers.Flatten(input_shape=(153600, )), keras.layers.Dense(128, activation=tf.nn.sigmoid), keras.layers.Dense(outlayersize, activation=tf.nn.sigmoid)])
         self.thisnet.compile(optimizer='sgd', loss=keras.losses.sparse_categorical_crossentropy, metrics=['accuracy'])
-        self.thisnet.fit(td.X_train, td.y_train.argmax(-1), epochs=10)
+        self.thisnet.fit(td.X_train, td.y_train.argmax(-1), epochs=20)
         
     def predict(self, X):
         y = self.thisnet.predict(X)
