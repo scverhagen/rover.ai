@@ -22,6 +22,7 @@ if __name__ == '__main__':
     print('Initializing neural network...')
     thisnet = nn.ann()
     print('Training...')
+    
     thisnet.train(td)
     
     print('Saving model...')
@@ -31,6 +32,18 @@ if __name__ == '__main__':
     endtimer = time.time()
     secs = round(endtimer - starttimer, 2)
     print(f"Neural network training completed in {secs} seconds.")
-    print('done.')
+    print('Testing model accuracy...')
+    print(td.X_test.max())
+    y = thisnet.predict(td.X_test)
+    #print(y.argmax(-1))
+    print(y)
+    #print(td.y_test.argmax(-1))
+    
+    #y_true = y.argmax(-1)
+    accuracy = np.mean(y.argmax(-1) == td.y_test.argmax(-1))
+    print(accuracy)
+    
+    #print(td.y_test)
+    #print(y)
 
     exit()

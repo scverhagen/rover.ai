@@ -32,7 +32,7 @@ def main():
         pics = glob.glob(os.path.join(label, '*'))
         for pic in pics:
             img = cv2.imread(pic)
-            img2 = nn.convertframefornn(img)
+            img2 = nn.convertframefornn(img, flatten=False)
 
             cv2.imshow(label, img)
             cv2.imshow('output', img2)
