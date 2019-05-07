@@ -50,6 +50,8 @@ def wwwroot():
 <button onclick="httpGetAsync('/sendcommand?cmd=stop', null);">STOP</button>
 <button onclick="httpGetAsync('/sendcommand?cmd=move backwards', null);">Move Backwards</button>
 <hr>
+<button onclick="httpGetAsync('/sendcommand?cmd=autopilot on', null);">Auto Pilot ON</button>
+<button onclick="httpGetAsync('/sendcommand?cmd=autopilot off', null);">Auto Pilot OFF</button>
 <button onclick="httpGetAsync('/sendcommand?cmd=disable distancesensor', null);">Disable Distance Sensor</button>
 <button onclick="httpGetAsync('/sendcommand?cmd=poweroff', null);">Power off</button>
 """

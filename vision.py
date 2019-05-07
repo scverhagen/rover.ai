@@ -25,6 +25,9 @@ print('Loading neural network...')
 thisnet = nn.nn.dnn_tf()
 thisnet.load()
 
+def test():
+    pass
+
 class vdq_class(object):
     
     def __init__(self, queue_length = 3):

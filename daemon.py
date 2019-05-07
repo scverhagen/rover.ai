@@ -7,11 +7,17 @@ import gpiozero
 import rovercom
 import hbridge
 import servo
+
+global hasvision
+hasvision = False
+
+
 import vision
 
 thisfilepath = os.path.dirname(__file__)
 
 # Global Autopilot bool:
+global autopilot
 autopilot = False
 
 # steering var:
@@ -265,6 +271,12 @@ def processacommand(cmd):
             throttle = throttle - 10
             if throttle < -100:
                 throttle = -100
+
+    if largs[0] == 'autopilot':
+        if largs[1] == 'on':
+            autopilot == True
+        elif largs[1] == 'off'
+        autopilot == False
 
 def processcommand(cmd):
     if cmd == None:
