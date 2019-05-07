@@ -252,14 +252,14 @@ def processacommand(cmd):
             if throttle > 100:
                 throttle = 100
 
-    if largs[0] == 'throttle':
-        if largs[1] == 'up':
+    if largs[0] == 'increase':
+        if largs[1] == 'throttle':
             throttle = throttle + 10
             if throttle > 100:
                 throttle = 100
                 
-    if largs[0] == 'throttle':
-        if largs[1] == 'down':
+    if largs[0] == 'decrease':
+        if largs[1] == 'throttle':
             throttle = throttle - 10
             if throttle < -100:
                 throttle = -100
