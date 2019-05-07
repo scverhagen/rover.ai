@@ -39,7 +39,6 @@ if __name__ == '__main__':
     print('Model accuracy is: ' + str(accuracy))
 
     print('Saving model...')
-    nnfilename = os.path.join(thisfilepath, 'nn_model')
     thisnet.save()
 
     exit()

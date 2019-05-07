@@ -65,7 +65,7 @@ class dnn_tf:
 
     def load(self, filename=''):
         if filename == '':
-            dirs = glob.glob(os.path.join(thisfilepath, 'nn_model', '*'))
+            dirs = glob.glob(os.path.join(thisfilepath, 'tf_model', '*'))
             dirs.sort()
             for dir in dirs:
                 if os.path.isdir(dir) == True:
@@ -74,9 +74,9 @@ class dnn_tf:
         self.thisnet = tf.contrib.saved_model.load_keras_model(filename)
         self.thisnet.compile(optimizer=tf.train.RMSPropOptimizer(learning_rate=0.03), loss=keras.losses.sparse_categorical_crossentropy, metrics=['accuracy'])
 
-    def save(self, filename):
+    def save(self, filename=''):
         if filename == '':
-            filename = os.path.join(thisfilepath, 'nn_model')
+            filename = os.path.join(thisfilepath, 'tf_model')
         saved_model_path = tf.contrib.saved_model.save_keras_model(self.thisnet, filename)
 
 class ann:

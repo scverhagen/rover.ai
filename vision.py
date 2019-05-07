@@ -22,10 +22,10 @@ def decision_from_frame(img):
     img2 = nn.nn.convertframefornn(img, flatten=True)
 
     X = np.float32(img2)
-    X.resize(153600,)
+    X = np.array([X])
     #print(str(img2.shape))
 
-    y = thisnet.predict(X)
+    y = thisnet.predict(X)[0]
     return y.argmax(-1)
 
 def training_test():
@@ -41,8 +41,22 @@ def training_test():
     print('Accuracy: ' + str(round(acc, 1)) + '%')
 
 if __name__ == '__main__':
-    print('Testing random image:')
+    print('Testing computer vision:')
 
     img = cv2.imread(os.path.join(thisfilepath, 'nn', 'sample_data', '0', 'i_219.jpg'))
     dec = decision_from_frame(img)
     print(dec)
+    
+    cap = cv2.VideoCapture(0)
+    ret = cap.set(3,640)
+    ret = cap.set(4,480)
+
+    while(True):
+        ret, frame = cap.read()
+        print(decision_from_frame(frame))
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
