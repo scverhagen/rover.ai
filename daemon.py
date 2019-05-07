@@ -252,6 +252,18 @@ def processacommand(cmd):
             if throttle > 100:
                 throttle = 100
 
+    if largs[0] == 'throttle':
+        if largs[1] == 'up':
+            throttle = throttle + 10
+            if throttle > 100:
+                throttle = 100
+                
+    if largs[0] == 'throttle':
+        if largs[1] == 'down':
+            throttle = throttle - 10
+            if throttle < -100:
+                throttle = -100
+
 def processcommand(cmd):
     if cmd == None:
          return
