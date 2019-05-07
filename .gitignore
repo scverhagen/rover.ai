@@ -1,5 +1,6 @@
 # rover.ai files:
 rover_status
+rover_settings.json
 nn/training_data/rover.pkl
 #nn/tf_model
 nn/nn_model

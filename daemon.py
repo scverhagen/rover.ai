@@ -57,21 +57,18 @@ status = rovercom.status_fifo()
 
 def checkforvisioncommand():
     
-    # TODO:
-    # pull image frame from camera
-    # process with artificial neural network
-    # return command
+    # 0 forward
+    # 1 left
+    # 2 right
 
-    nn_result = 0
+    nn_result = vision.get_next_decision()
 
-    if nn_result == [1,0,0,0]:
-        return 'stop'
-    elif nn_result == [0,1,0,0]:
-        return 'move forward'
-    elif nn_result == [0,0,1,0]:
-        return 'move left'
-    elif nn_result == [0,0,0,1]:
-        return 'move right'
+    if nn_result == 0:
+        return 'steer center'
+    elif nn_result == 1:
+        return 'steer left'
+    elif nn_result == 2:
+        return 'steer right'
 
     # unexpected result from artificial neural network--return ''
     return ''

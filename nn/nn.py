@@ -108,7 +108,7 @@ class ann:
 class training_data(object):
     def __init__(self):
         self.data = pd.DataFrame()
-
+       
     def load_pickle(self, filename):
         self.data = pd.DataFrame()
 
