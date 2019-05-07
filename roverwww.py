@@ -42,6 +42,9 @@ def wwwroot():
     hs += '<div id="status">Loading...</div><br>'
     hs += '<span id="spanx">X</span>,<span id="spany">Y</span>>'
     hs += """
+<button onclick="httpGetAsync('/sendcommand?cmd=steer left', null);">Steer Left</button>
+<button onclick="httpGetAsync('/sendcommand?cmd=steer right', null);">Steer Right</button>
+<hr>
 <button onclick="httpGetAsync('/sendcommand?cmd=move forward', null);">Move Forward</button>
 <button onclick="httpGetAsync('/sendcommand?cmd=stop', null);">STOP</button>
 <button onclick="httpGetAsync('/sendcommand?cmd=move backwards', null);">Move Backwards</button>
