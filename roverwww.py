@@ -46,9 +46,9 @@ def wwwroot():
 <button onclick="httpGetAsync('/sendcommand?cmd=steer center', null);">Steer Center</button>
 <button onclick="httpGetAsync('/sendcommand?cmd=steer right', null);">Steer Right</button>
 <hr>
-<button onclick="httpGetAsync('/sendcommand?cmd=throttle up', null);">Move Forward</button>
+<button onclick="httpGetAsync('/sendcommand?cmd=increase throttle', null);">Move Forward</button>
 <button onclick="httpGetAsync('/sendcommand?cmd=stop', null);">STOP</button>
-<button onclick="httpGetAsync('/sendcommand?cmd=throttle down', null);">Move Backwards</button>
+<button onclick="httpGetAsync('/sendcommand?cmd=decrease throttle', null);">Move Backwards</button>
 <hr>
 <button onclick="httpGetAsync('/sendcommand?cmd=poweroff', null);">Power off</button>
 """
