@@ -200,15 +200,15 @@ def processacommand(cmd):
             elif largs[1] == 'forward':
                 print('move forward')
                 throttle = 100
-                steering = 0
+                #steering = 0
             elif largs[1] == 'right':
                 print('move right')
                 throttle = 75
                 steering = 1
             elif largs[1] == 'backwards':
                 print('move backwards')
-                throttle = -75
-                steering = 0
+                throttle = -100
+                #steering = 0
         return
 
     if largs[0] == 'steerval':
