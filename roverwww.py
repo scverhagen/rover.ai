@@ -50,6 +50,7 @@ def wwwroot():
 <button onclick="httpGetAsync('/sendcommand?cmd=stop', null);">STOP</button>
 <button onclick="httpGetAsync('/sendcommand?cmd=decrease throttle', null);">Move Backwards</button>
 <hr>
+<button onclick="httpGetAsync('/sendcommand?cmd=disable distancesensor', null);">Disable Distance Sensor</button>
 <button onclick="httpGetAsync('/sendcommand?cmd=poweroff', null);">Power off</button>
 """
     hs += '<script>'

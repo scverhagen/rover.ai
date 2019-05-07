@@ -157,7 +157,7 @@ def checkultrasonic():
     return None
 
 def processacommand(cmd):
-    global throttle, steering
+    global throttle, steering, hasDistanceSensor
     lcmd = cmd.lower()
     args = cmd.split()
     largs = lcmd.split()
@@ -239,6 +239,11 @@ def processacommand(cmd):
             print('Setting throttle to ' + args[1])
             throttle = int(args[1])
         return
+
+    if largs[0] == 'disable':
+        if largs[1] == 'distancesensor':
+            print('distance sensor disabled')
+            hasDistanceSensor = False
 
     if largs[0] == 'slow':
         if largs[1] == 'down':
