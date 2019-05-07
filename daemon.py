@@ -7,6 +7,7 @@ import gpiozero
 import rovercom
 import hbridge
 import servo
+import vision
 
 thisfilepath = os.path.dirname(__file__)
 

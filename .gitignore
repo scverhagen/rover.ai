@@ -1,5 +1,7 @@
 # rover.ai files:
 rover_status
+nn/training_data/rover.pkl
+nn/nn_model
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -8,6 +10,9 @@ __pycache__/
 
 # C extensions
 *.so
+
+# visual studio files
+.vs/
 
 # Distribution / packaging
 .Python

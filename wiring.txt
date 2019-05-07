@@ -1,0 +1,11 @@
+pin 2 - board 5v supply - white
+pin 4 - ultrasonic sensor - red
+pin 6 - board ground - purple
+pin 7 - ultrasonic sensor - yellow
+pin 11 - ultrasonic sensor - blue
+pin 12 - hbridge ena - brown
+pin 13 - servo signal - orange
+pin 38 - hbridge in1 - orange
+pin 39 - ultrasonic sensor - black
+pin 40 - hbridge in2 - green
+

@@ -1,0 +1,5 @@
+Instructions:
+1.  Populate sample_data folder with data
+2.  run ./review_samples.py to review and delete bad samples
+3.  run ./compile_training_data.py to convert training data to pickle file
+4.  run ./train_model.py to train model (with output to 'nn_model')
