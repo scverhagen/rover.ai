@@ -57,7 +57,7 @@ class dnn_tf:
 
         # 92.6%:
         self.thisnet.compile(optimizer=tf.train.RMSPropOptimizer(learning_rate=0.03), loss=keras.losses.sparse_categorical_crossentropy, metrics=['accuracy'])
-        self.thisnet.fit(td.X_train, td.y_train.argmax(-1), epochs=25)
+        self.thisnet.fit(np.float32(td.X_train), np.float32(td.y_train.argmax(-1)), epochs=25)
         
     def predict(self, X):
         y = self.thisnet.predict(X)
