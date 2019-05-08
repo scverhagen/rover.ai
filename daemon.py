@@ -8,9 +8,7 @@ import rovercom
 import hbridge
 import servo
 
-global hasvision
 hasvision = False
-
 
 import vision
 thisfilepath = os.path.dirname(__file__)
@@ -272,10 +270,10 @@ def processacommand(cmd):
 
     if largs[0] == 'autopilot':
         if largs[1] == 'on':
-            autopilot == True
+            autopilot = True
             print('autopilot on')
         elif largs[1] == 'off':
-            autopilot == False
+            autopilot = False
             print('autopilot off')
 
 def processcommand(cmd):
@@ -319,6 +317,7 @@ def mainloop():
 
         if autopilot == True:
             vcmd = checkforvisioncommand()
+            #print(vcmd)
             processcommand(vcmd)
 
         # control motor:
