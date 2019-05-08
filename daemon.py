@@ -13,11 +13,9 @@ hasvision = False
 
 
 import vision
-
 thisfilepath = os.path.dirname(__file__)
 
 # Global Autopilot bool:
-global autopilot
 autopilot = False
 
 # steering var:
@@ -160,7 +158,7 @@ def checkultrasonic():
     return None
 
 def processacommand(cmd):
-    global throttle, steering, hasDistanceSensor
+    global throttle, steering, hasDistanceSensor, autopilot
     lcmd = cmd.lower()
     args = cmd.split()
     largs = lcmd.split()
@@ -299,7 +297,7 @@ def do_init():
     print('Init complete.')
 
 def mainloop():
-    global hasDistanceSensor, obj_dist, throttle, steering, laststeering
+    global hasDistanceSensor, obj_dist, throttle, steering, laststeering, autopilot
     laststatus = None
    
     while (1):

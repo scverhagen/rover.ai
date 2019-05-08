@@ -12,7 +12,6 @@ import nn.nn
 thisfilepath = os.path.dirname(__file__)
 
 print('Loading settings...')
-global roversettings
 roversettings = settings.settings()
 
 print('Initializing video capture...')
