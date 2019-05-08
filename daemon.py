@@ -275,8 +275,10 @@ def processacommand(cmd):
     if largs[0] == 'autopilot':
         if largs[1] == 'on':
             autopilot == True
+            print('autopilot on')
         elif largs[1] == 'off':
             autopilot == False
+            print('autopilot off')
 
 def processcommand(cmd):
     if cmd == None:
