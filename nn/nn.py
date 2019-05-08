@@ -11,6 +11,9 @@ import pandas as pd
 thisfilepath = os.path.dirname(__file__)
 
 def convertframefornn(img=None, flatten=True):
+    #resize image:
+    img = cv2.resize(img,(320,240))
+    
     # crop the image:
     #image2 = img[240:480, 0:640]
     image2 = img[120:240, 0:320]
