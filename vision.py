@@ -18,10 +18,11 @@ roversettings = settings.settings()
 
 print('Initializing video capture...')
 #cap = cv2.VideoCapture(roversettings.dict['videosource'])
-cap = picamera.PiCamera()
+picam = picamera.PiCamera()
 #ret = cap.set(3,640)
 #ret = cap.set(4,480)
-cap.resolution = (320, 240)
+picam.resolution = (320, 240)
+cap = picamera.array.PiRGBArray(picam)
 
 print('Loading neural network...')
 thisnet = nn.nn.dnn_tf()
@@ -84,15 +85,10 @@ def training_test():
     print('Accuracy: ' + str(round(acc, 1)) + '%')
 
 def get_video_frame():
-    stream = io.BytesIO()
-    global cap
-    #for i in range(9):
-    #    cap.grab()
-    #ret, frame = cap.read()
-    cap.capture(stream, format='jpeg')
-    frame = np.fromstring(stream.getvalue(), dtype=np.uint8)
-    frame = cv2.imdecode(frame, 1)
-    return frame
+    global cap, picam
+    
+    picam.capture(cap, format="bgr")
+    return cap.array
 
 def get_next_decision():
     frame = get_video_frame()
