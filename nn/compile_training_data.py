@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
     endtimer = time.time()
     secs = endtimer - starttimer
-    print(f"Processed {numimages} images in {secs} seconds.")
+    print("Processed " + str(numimages) + " images in " + str(secs) + " seconds.")
 
     # save training 'pickle'
     print('Saving file...')

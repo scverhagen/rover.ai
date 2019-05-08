@@ -163,7 +163,7 @@ class training_data(object):
                     with open(label + '.name', 'r') as file:
                         thislabelname = file.readline().strip()
 
-                print(f"Processing data for label: {thislabelname}...")
+                print('Processing data for label: ' + thislabelname + '...')
                 pics = glob.glob(os.path.join(label, '*.jpg'))
                 for pic in pics:
                     img = cv2.imread(pic)

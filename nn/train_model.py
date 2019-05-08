@@ -27,7 +27,7 @@ if __name__ == '__main__':
     
     endtimer = time.time()
     secs = round(endtimer - starttimer, 2)
-    print(f"Neural network training completed in {secs} seconds.")
+    print("Neural network training completed in " + str(secs) + " seconds.")
     print('Testing model accuracy...')
     y = thisnet.predict(td.X_test)
     #print(y.argmax(-1))
