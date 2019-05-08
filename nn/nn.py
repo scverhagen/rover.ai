@@ -64,20 +64,16 @@ class dnn_tf:
         return y
 
     def load(self, filename=''):
-        if filename == '':
-            dirs = glob.glob(os.path.join(thisfilepath, 'tf_model', '*'))
-            dirs.sort()
-            for dir in dirs:
-                if os.path.isdir(dir) == True:
-                    filename = dir
+        filename = os.path.join(thisfilepath, 'tf_model')
 
-        self.thisnet = tf.contrib.saved_model.load_keras_model(filename)
+        self.thisnet = tf.keras.models.load_model(filename)
         self.thisnet.compile(optimizer=tf.train.RMSPropOptimizer(learning_rate=0.03), loss=keras.losses.sparse_categorical_crossentropy, metrics=['accuracy'])
 
     def save(self, filename=''):
         if filename == '':
             filename = os.path.join(thisfilepath, 'tf_model')
-        saved_model_path = tf.contrib.saved_model.save_keras_model(self.thisnet, filename)
+        #saved_model_path = tf.contrib.saved_model.save_keras_model(self.thisnet, filename)
+        tf.keras.models.save_model(self.thisnet, filename)
 
 class ann:
     def __init__(self):
