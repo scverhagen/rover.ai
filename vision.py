@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 import os
+import io
 import pandas as pd
 import numpy as np
 import cv2
+import picamera
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 
@@ -15,10 +17,11 @@ print('Loading settings...')
 roversettings = settings.settings()
 
 print('Initializing video capture...')
-global cap
-cap = cv2.VideoCapture(roversettings.dict['videosource'])
-ret = cap.set(3,640)
-ret = cap.set(4,480)
+#cap = cv2.VideoCapture(roversettings.dict['videosource'])
+cap = picamera.PiCamera()
+#ret = cap.set(3,640)
+#ret = cap.set(4,480)
+cap.resolution = (320, 240)
 
 print('Loading neural network...')
 thisnet = nn.nn.dnn_tf()
@@ -81,7 +84,14 @@ def training_test():
     print('Accuracy: ' + str(round(acc, 1)) + '%')
 
 def get_video_frame():
-    ret, frame = cap.read()
+    stream = io.BytesIO()
+    global cap
+    #for i in range(9):
+    #    cap.grab()
+    #ret, frame = cap.read()
+    cap.capture(stream, format='jpeg')
+    frame = np.fromstring(stream.getvalue(), dtype=np.uint8)
+    frame = cv2.imdecode(frame, 1)
     return frame
 
 def get_next_decision():
@@ -92,11 +102,11 @@ if __name__ == '__main__':
     
     print('Testing computer vision:')
 
-    ret = cap.set(3,640)
-    ret = cap.set(4,480)
+    #ret = cap.set(3,640)
+    #ret = cap.set(4,480)
 
     while(True):
-        ret, frame = cap.read()
+        frame = get_video_frame()
         
         print(decision_from_frame(frame))
         #print(frame)
@@ -105,5 +115,5 @@ if __name__ == '__main__':
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
-    cap.release()
+    #cap.release()
     cv2.destroyAllWindows()

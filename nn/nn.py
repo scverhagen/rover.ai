@@ -12,7 +12,8 @@ thisfilepath = os.path.dirname(__file__)
 
 def convertframefornn(img=None, flatten=True):
     # crop the image:
-    image2 = img[240:480, 0:640]
+    #image2 = img[240:480, 0:640]
+    image2 = img[120:240, 0:320]
     
     # blur the image:
     #image2 = cv2.GaussianBlur(image2, (5, 5), 0)
@@ -51,7 +52,8 @@ class dnn_tf:
         numentries, px = td.X_train.shape
         numentries, outlayersize = td.y_train.shape
         
-        self.thisnet = keras.Sequential([keras.layers.Flatten(input_shape=(153600, )), keras.layers.Dense(196, activation=tf.nn.sigmoid), keras.layers.Dense(outlayersize, activation=tf.nn.sigmoid)])
+        #self.thisnet = keras.Sequential([keras.layers.Flatten(input_shape=(153600, )), keras.layers.Dense(196, activation=tf.nn.sigmoid), keras.layers.Dense(outlayersize, activation=tf.nn.sigmoid)])
+        self.thisnet = keras.Sequential([keras.layers.Flatten(input_shape=(38400, )), keras.layers.Dense(196, activation=tf.nn.sigmoid), keras.layers.Dense(outlayersize, activation=tf.nn.sigmoid)])
         # 88.8% self.thisnet.compile(optimizer=tf.train.AdamOptimizer(learning_rate=0.015), loss=keras.losses.sparse_categorical_crossentropy, metrics=['accuracy'])
         # 81% self.thisnet.compile(optimizer=tf.train.AdagradOptimizer(learning_rate=0.005), loss=keras.losses.sparse_categorical_crossentropy, metrics=['accuracy'])
 
